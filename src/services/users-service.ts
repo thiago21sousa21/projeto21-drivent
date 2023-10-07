@@ -5,7 +5,7 @@ import { cannotEnrollBeforeStartDateError, duplicatedEmailError } from '@/errors
 import { userRepository } from '@/repositories';
 
 export async function createUser({ email, password }: CreateUserParams): Promise<User> {
-  await canEnrollOrFail();
+  //await canEnrollOrFail();
 
   await validateUniqueEmailOrFail(email);
 
