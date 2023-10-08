@@ -25,6 +25,8 @@ const isTheRoomFull =async (roomId:number) => {
 }
 
 const changeRoom = async(roomId: number, bookingId: number)=>{
+    if(isNaN(bookingId) || isNaN(roomId))throw notFoundError()
+
 
     await isTheRoomFull(roomId);
 
