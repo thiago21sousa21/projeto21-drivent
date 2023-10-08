@@ -122,20 +122,16 @@ describe('post booking',()=>{
             const newHotel = await createHotel()
             const newRoom = await createRoom(newHotel.id, 1)
             const newBooking = await createBooking(user.id, newRoom.id);
-            
-            const {status, body} = await server.post('/booking')
-                .set('Authorization', `Bearer ${token}`)
-                .send({roomId:newRoom.id});
 
-            //create the secont user and trying to use a room
             const user2 = await createUser();
             const token2 = await generateValidToken(user)
-
-            await createBooking(user2.id, newRoom.id);
-
+            
             const second = await server.post('/booking')
                 .set('Authorization', `Bearer ${token2}`)
                 .send({roomId:newRoom.id});
+
+            //create the secont user and trying to use a room
+          
 
             expect(second.status).toBe(403)
         })
