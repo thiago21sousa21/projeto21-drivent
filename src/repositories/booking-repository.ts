@@ -3,7 +3,7 @@ import { prisma } from "@/config"
 
 const getBooking = async(userId: number)=>{
     const booking = await prisma.booking.findUnique({
-        where:{id:userId},
+        where:{userId},
         select:{
             id:true,
             Room:true

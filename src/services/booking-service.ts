@@ -3,6 +3,7 @@ import { bookingRepository } from "@/repositories"
 
 
 const getBooking = async(userId: number)=>{
+
     const booking = await bookingRepository.getBooking(userId);
     if(!booking)throw notFoundError();
     return booking;
@@ -18,6 +19,7 @@ const newBooking = async(roomId: number, userId: number)=>{
 
 const isTheRoomFull =async (roomId:number) => {
     const capacity = await bookingRepository.getCapacity(roomId);
+    if(!capacity)throw notFoundError();
     const busy = await bookingRepository.getBusys(roomId);
     if(busy>=capacity)throw forbidenError();
 }
