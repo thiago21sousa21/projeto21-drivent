@@ -15,15 +15,15 @@ export const newBooking = async(req: AuthenticatedRequest, res: Response)=>{
     const {roomId} = req.body
 
     const booking = await bookingService.newBooking(roomId, userId)
-    return res.status(httpStatus.CREATED).send(booking);
+    return res.status(httpStatus.OK).send(booking);
 }
 
 export const changeRoom = async(req: AuthenticatedRequest, res: Response)=>{
     const bookingId = Number(req.params.bookingId)
     const {roomId} = req.body;
-    await bookingService.changeRoom(roomId, bookingId)
-    return res.sendStatus(httpStatus.OK)
-     
+    const changed = await bookingService.changeRoom(roomId, bookingId)
+    return res.status(httpStatus.OK).send({bookingId:changed.id})
+    
 }
 
 export const bookingController = {

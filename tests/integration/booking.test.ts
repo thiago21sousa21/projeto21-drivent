@@ -5,6 +5,7 @@ import { cleanDb, generateValidToken } from '../helpers';
 import httpStatus from 'http-status';
 import faker from '@faker-js/faker';
 import * as jwt from 'jsonwebtoken'
+import { number } from 'joi';
 
 
 
@@ -135,6 +136,21 @@ describe('post booking',()=>{
             expect(second.status).toBe(403)
         })
 
+        it('should return status 200. sucess in choice the room ', async () => {
+            const user = await createUser();
+            const token = await generateValidToken(user)
+
+            const newHotel = await createHotel()
+            const newRoom = await createRoom(newHotel.id, 1)
+            
+            const {status, body} = await server.post('/booking')
+                .set('Authorization', `Bearer ${token}`)
+                .send({roomId:newRoom.id});
+
+            expect(status).toBe(200)
+            expect(body).toEqual({bookingId:expect.any(Number)})
+        })
+
     })  
 
 
@@ -243,6 +259,7 @@ describe('PUT /booking/:bookingId ⇒ Trocar uma reserva',()=>{
             //create the secont user and trying to use a room          
 
             expect(second.status).toBe(200);
+            expect(second.body).toEqual({bookingId:newBooking2.id})
             
         })
 
