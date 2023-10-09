@@ -1,11 +1,10 @@
 import supertest from 'supertest';
 import app, { init } from '@/app';
-import { createBooking, createHotel, createRoom, createUser } from '../factories';
+import { createBooking, createEnrollmentWithAddress, createHotel, createRoom, createTicket, createTicketType, createUser } from '../factories';
 import { cleanDb, generateValidToken } from '../helpers';
 import httpStatus from 'http-status';
 import faker from '@faker-js/faker';
 import * as jwt from 'jsonwebtoken'
-import { number } from 'joi';
 
 
 
@@ -108,6 +107,10 @@ describe('post booking',()=>{
         it ('should return status 404 for roomId does not exist', async () => {
             const user = await createUser();
             const token = await generateValidToken(user)
+            const enrollment = await createEnrollmentWithAddress(user)
+            const ticketType = await createTicketType(false, true)
+            const ticket = await createTicket(enrollment.id, ticketType.id, "PAID")
+            
             const {status, body} = await server.post('/booking')
                 .set('Authorization', `Bearer ${token}`)
                 .send({roomId:999999});
@@ -118,6 +121,7 @@ describe('post booking',()=>{
             const user = await createUser();
             const token = await generateValidToken(user)
 
+
             //create hotel with room
 
             const newHotel = await createHotel()
@@ -125,7 +129,11 @@ describe('post booking',()=>{
             const newBooking = await createBooking(user.id, newRoom.id);
 
             const user2 = await createUser();
-            const token2 = await generateValidToken(user)
+            const token2 = await generateValidToken(user2)
+            const enrollment = await createEnrollmentWithAddress(user2)
+            const ticketType = await createTicketType(false, true)
+            const ticket = await createTicket(enrollment.id, ticketType.id, "PAID")
+            
             
             const second = await server.post('/booking')
                 .set('Authorization', `Bearer ${token2}`)
@@ -139,6 +147,9 @@ describe('post booking',()=>{
         it('should return status 200. sucess in choice the room ', async () => {
             const user = await createUser();
             const token = await generateValidToken(user)
+            const enrollment = await createEnrollmentWithAddress(user)
+            const ticketType = await createTicketType(false, true)
+            const ticket = await createTicket(enrollment.id, ticketType.id, "PAID")
 
             const newHotel = await createHotel()
             const newRoom = await createRoom(newHotel.id, 1)
